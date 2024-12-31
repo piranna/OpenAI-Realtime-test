@@ -1,0 +1,34 @@
+{
+  "name": "openai-realtime-test",
+  "version": "0.0.0",
+  "description": "Test of OpenAI Realtime API for educational purposes",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm start -- --log-level info --pretty-logs --watch",
+    "start": "fastify start index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piranna/OpenAI-Realtime-test.git"
+  },
+  "keywords": [
+    "OpenAI",
+    "Realtime",
+    "test",
+    "WebRTC",
+    "audio",
+    "voice"
+  ],
+  "author": "Jesús Leganés-Combarro 'piranna' (https://piranna.github.io)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/piranna/OpenAI-Realtime-test/issues"
+  },
+  "homepage": "https://github.com/piranna/OpenAI-Realtime-test#readme",
+  "dependencies": {
+    "@fastify/static": "^8.0.3",
+    "fastify-cli": "^7.3.0"
+  }
+}
