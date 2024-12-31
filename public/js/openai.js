@@ -1,6 +1,7 @@
 // Manage the session with OpenAI API
 
 
+// Get an ephemeral key from the Fastify server
 async function start()
 {
   const response = await fetch("/start");
@@ -33,14 +34,16 @@ export async function startSession(promiseMicrophoneStream)
 {
   if (peerConnection) throw new Error("Session already started");
 
-  const [{EPHEMERAL_KEY, baseUrl, model, pc}, ms] = await Promise.all([
-    // Get an ephemeral key from the Fastify server
+  const [
+    {EPHEMERAL_KEY, baseUrl, model, pc},
+    microphoneStream
+  ] = await Promise.all([
     start(),
     promiseMicrophoneStream
   ]);
 
   // Add microphone track to the peer connection
-  pc.addTrack(ms.getTracks()[0]);
+  pc.addTrack(microphoneStream.getAudioTracks()[0]);
 
   // Start the session using the Session Description Protocol (SDP)
   const offer = await pc.createOffer();
