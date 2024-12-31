@@ -14,15 +14,6 @@ async function start()
   // Create a peer connection
   const pc = new RTCPeerConnection();
 
-  // Set up to play remote audio from the model
-  const audioElement = document.createElement("audio");
-  audioElement.autoplay = true;
-
-  pc.addEventListener("track", function({streams: [stream]})
-  {
-    audioElement.srcObject = stream;
-  });
-
   // Set up data channel for sending and receiving events
   dataChannel = pc.createDataChannel("oai-events");
 
@@ -30,7 +21,7 @@ async function start()
 }
 
 
-export async function startSession(promiseMicrophoneStream)
+export async function startSession(promiseMicrophoneStream, audioElement)
 {
   if (peerConnection) throw new Error("Session already started");
 
@@ -44,6 +35,14 @@ export async function startSession(promiseMicrophoneStream)
 
   // Add microphone track to the peer connection
   pc.addTrack(microphoneStream.getAudioTracks()[0]);
+
+  // Set up to play remote audio from the model
+  audioElement.autoplay = true;
+
+  pc.addEventListener("track", function({streams: [stream]})
+  {
+    audioElement.srcObject = stream;
+  });
 
   // Start the session using the Session Description Protocol (SDP)
   const offer = await pc.createOffer();

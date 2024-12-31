@@ -23,7 +23,9 @@ export function start_onClick({target})
 
   promiseMicrophoneStream.then(whenMicrophoneStream)
 
-  void startSession(promiseMicrophoneStream)
+  const audioElement = document.createElement("audio");
+
+  void startSession(promiseMicrophoneStream, audioElement)
     .then(whenStarted.bind(target), whenStartSession_failed.bind(target))
     .finally(whenFinally.bind(target));
 }
