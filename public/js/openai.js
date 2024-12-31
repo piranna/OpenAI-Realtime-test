@@ -29,15 +29,14 @@ async function start()
 }
 
 
-export async function startSession()
+export async function startSession(promiseMicrophoneStream)
 {
   if (peerConnection) throw new Error("Session already started");
 
   const [{EPHEMERAL_KEY, baseUrl, model, pc}, ms] = await Promise.all([
     // Get an ephemeral key from the Fastify server
     start(),
-    // Get local audio track from microphone input in the browser
-    navigator.mediaDevices.getUserMedia({audio: true})
+    promiseMicrophoneStream
   ]);
 
   // Add microphone track to the peer connection

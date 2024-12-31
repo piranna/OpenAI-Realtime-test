@@ -12,7 +12,19 @@
   </head>
 
   <body>
-    <button id="startStop">Start</button>
+    <label for=autoGainControl>
+      Automatic gain control
+      <input id=autoGainControl type=checkbox checked>
+    </label>
+    <label for=echoCancellation>
+      Echo cancellation
+      <input id=echoCancellation type=checkbox checked>
+    </label>
+    <label for=noiseSuppression>
+      Noise suppression
+      <input id=noiseSuppression type=checkbox checked>
+    </label>
+    <button id="startStop" disabled>Start</button>
   </body>
 
   <script type="module" src="js/index.js"></script>

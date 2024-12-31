@@ -4,12 +4,26 @@
 import {startSession, stopSession} from './openai.js';
 
 
+export function checkbox_onChange({target})
+{
+  audio[target.id] = this.checked;
+
+  microphoneTrack?.applyConstraints(audio);
+
+  console.debug(audio)
+}
+
 export function start_onClick({target})
 {
   target.disabled = true;
   target.textContent = 'Starting...';
 
-  void startSession()
+  // Get local audio track from microphone input in the browser
+  const promiseMicrophoneStream = navigator.mediaDevices.getUserMedia({audio})
+
+  promiseMicrophoneStream.then(whenMicrophoneStream)
+
+  void startSession(promiseMicrophoneStream)
     .then(whenStarted.bind(target), whenStartSession_failed.bind(target))
     .finally(whenFinally.bind(target));
 }
@@ -19,9 +33,21 @@ function stop_onClick({target})
   target.disabled = true;
   target.textContent = 'Stopping...';
 
+  microphoneTrack?.stop();
+  microphoneTrack = null;
+
   void stopSession()
     .then(whenStopped.bind(target), whenStopSession_failed.bind(target))
     .finally(whenFinally.bind(target));
+}
+
+
+// Microphone stream
+function whenMicrophoneStream(stream)
+{
+  const [track] = stream.getAudioTracks();
+
+  microphoneTrack = track;
 }
 
 
@@ -71,3 +97,8 @@ function whenFinally()
 {
   this.disabled = false;
 }
+
+
+// Audio constraints for the microphone input
+let audio = {}
+let microphoneTrack = null;
