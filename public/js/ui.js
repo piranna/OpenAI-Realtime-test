@@ -28,7 +28,7 @@ export function start_onClick({target})
   target.textContent = 'Starting...';
 
   // Get local audio track from microphone input in the browser
-  const promiseMicrophoneStream = navigator.mediaDevices.getUserMedia({audio})
+  const promiseMicrophoneStream = mediaDevices.getUserMedia({audio})
 
   promiseMicrophoneStream.then(whenMicrophoneStream)
 
@@ -41,7 +41,7 @@ export function start_onClick({target})
       .then(whenSessionStarted),
       setNoiseSourceUrl(noiseSourceUrl)
     ])
-    .then(whenStarted.bind(target), whenStartSession_failed.bind(target))
+    .then(whenStarted.bind(target), whenStarted_failed.bind(target))
     .finally(whenFinally.bind(target));
 }
 
@@ -54,7 +54,8 @@ function stop_onClick({target})
   microphoneTrack = null;
 
   void stopSession()
-    .then(whenStopped.bind(target), whenStopSession_failed.bind(target))
+    .then(whenStopped.bind(target))
+    .catch(whenStopped_failed.bind(target))
     .finally(whenFinally.bind(target));
 }
 
@@ -62,9 +63,7 @@ function stop_onClick({target})
 // Microphone stream
 function whenMicrophoneStream(stream)
 {
-  const [track] = stream.getAudioTracks();
-
-  microphoneTrack = track;
+  [microphoneTrack] = stream.getAudioTracks();
 }
 
 
@@ -90,7 +89,7 @@ function whenStarted()
   this.addEventListener('click', stop_onClick);
 }
 
-function whenStartSession_failed(error)
+function whenStarted_failed(error)
 {
   // TODO: show an error message to the user
   console.error(error);
@@ -113,7 +112,7 @@ function whenStopped()
   this.addEventListener('click', start_onClick);
 }
 
-function whenStopSession_failed(error)
+function whenStopped_failed(error)
 {
   // TODO: show an error message to the user
   console.error(error);
@@ -128,6 +127,9 @@ function whenFinally()
 {
   this.disabled = false;
 }
+
+
+const {mediaDevices} = navigator;
 
 
 // Audio constraints for the microphone input
