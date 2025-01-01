@@ -1,6 +1,7 @@
 // UI event handlers
 
 
+import {mixerStream, setAudioStream, setNoiseSourceUrl} from './mixer.js';
 import {startSession, stopSession} from './openai.js';
 
 
@@ -11,6 +12,14 @@ export function checkbox_onChange({target})
   microphoneTrack?.applyConstraints(audio);
 
   console.debug(audio)
+}
+
+export function select_onChange({target: {value}})
+{
+  noiseSourceUrl = value;
+
+  if(microphoneTrack)
+    void setNoiseSourceUrl(noiseSourceUrl).catch(console.error);
 }
 
 export function start_onClick({target})
@@ -24,8 +33,14 @@ export function start_onClick({target})
   promiseMicrophoneStream.then(whenMicrophoneStream)
 
   const audioElement = document.createElement("audio");
+  audioElement.autoplay = true;
+  audioElement.srcObject = mixerStream();
 
-  void startSession(promiseMicrophoneStream, audioElement)
+  void Promise.all([
+      startSession(promiseMicrophoneStream)
+      .then(whenSessionStarted),
+      setNoiseSourceUrl(noiseSourceUrl)
+    ])
     .then(whenStarted.bind(target), whenStartSession_failed.bind(target))
     .finally(whenFinally.bind(target));
 }
@@ -55,6 +70,17 @@ function whenMicrophoneStream(stream)
 
 // Start the session
 
+function whenSessionStarted(audioStream)
+{
+  setAudioStream(audioStream);
+
+  // BUG: see https://issues.chromium.org/issues/40094084
+  const audioElement = document.createElement("audio");
+  audioElement.autoplay = true;
+  audioElement.muted = true;
+  audioElement.srcObject = audioStream;
+}
+
 function whenStarted()
 {
   this.textContent = 'Stop'
@@ -77,6 +103,9 @@ function whenStartSession_failed(error)
 
 function whenStopped()
 {
+  setAudioStream(null);
+  void setNoiseSourceUrl(null);
+
   this.textContent = 'Start'
 
   // Switch the event listeners
@@ -104,3 +133,4 @@ function whenFinally()
 // Audio constraints for the microphone input
 let audio = {}
 let microphoneTrack = null;
+let noiseSourceUrl = null;

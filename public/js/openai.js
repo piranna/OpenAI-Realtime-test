@@ -21,7 +21,7 @@ async function start()
 }
 
 
-export async function startSession(promiseMicrophoneStream, audioElement)
+export async function startSession(promiseMicrophoneStream)
 {
   if (peerConnection) throw new Error("Session already started");
 
@@ -36,13 +36,11 @@ export async function startSession(promiseMicrophoneStream, audioElement)
   // Add microphone track to the peer connection
   pc.addTrack(microphoneStream.getAudioTracks()[0]);
 
-  // Set up to play remote audio from the model
-  audioElement.autoplay = true;
-
+  let audioStream;
   pc.addEventListener("track", function({streams: [stream]})
   {
-    audioElement.srcObject = stream;
-  });
+    audioStream = stream;
+  }, {once: true});
 
   // Start the session using the Session Description Protocol (SDP)
   const offer = await pc.createOffer();
@@ -63,6 +61,18 @@ export async function startSession(promiseMicrophoneStream, audioElement)
   await pc.setRemoteDescription({sdp, type: "answer"});
 
   peerConnection = pc;
+
+  if(audioStream) return audioStream;
+
+  return new Promise(function(resolve, reject)
+  {
+    // TODO: handle errors
+
+    pc.addEventListener("track", function({streams: [stream]})
+    {
+      resolve(stream);
+    }, {once: true});
+  })
 }
 
 // Stop current session, clean up peer connection and data channel
