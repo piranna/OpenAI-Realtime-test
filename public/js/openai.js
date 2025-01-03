@@ -2,14 +2,19 @@
 
 
 // Get an ephemeral key from the Fastify server
-async function start()
+async function start({model, voice})
 {
-  const response = await fetch("/start");
+  const body = JSON.stringify({model, voice});
+
+  let response = await fetch(
+    "/start",
+    {body, headers: {"Content-Type": "application/json"}, method: "POST"}
+  );
 
   if (!response.ok)
     throw new Error(`Failed to get token: ${response.statusText}`);
 
-  const {EPHEMERAL_KEY, baseUrl, model} = await response.json();
+  response = await response.json();
 
   // Create a peer connection
   const pc = new RTCPeerConnection();
@@ -17,11 +22,11 @@ async function start()
   // Set up data channel for sending and receiving events
   dataChannel = pc.createDataChannel("oai-events");
 
-  return {EPHEMERAL_KEY, baseUrl, model, pc}
+  return {...response, pc}
 }
 
 
-export async function startSession(promiseMicrophoneStream)
+export async function startSession(promiseMicrophoneStream, options)
 {
   if (peerConnection) throw new Error("Session already started");
 
@@ -29,7 +34,7 @@ export async function startSession(promiseMicrophoneStream)
     {EPHEMERAL_KEY, baseUrl, model, pc},
     microphoneStream
   ] = await Promise.all([
-    start(),
+    start(options),
     promiseMicrophoneStream
   ]);
 

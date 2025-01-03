@@ -27,6 +27,16 @@ export function start_onClick({target})
   target.disabled = true;
   target.textContent = 'Starting...';
 
+  let model = document.getElementById('model')
+  let voice = document.getElementById('voice')
+
+  model.disabled = true;
+  voice.disabled = true;
+
+  // Get the model and voice from the select elements
+  model = model.value;
+  voice = voice.value;
+
   // Get local audio track from microphone input in the browser
   const promiseMicrophoneStream = mediaDevices.getUserMedia({audio})
 
@@ -37,7 +47,7 @@ export function start_onClick({target})
   audioElement.srcObject = mixerStream();
 
   void Promise.all([
-      startSession(promiseMicrophoneStream)
+      startSession(promiseMicrophoneStream, {model, voice})
       .then(whenSessionStarted),
       setNoiseSourceUrl(noiseSourceUrl)
     ])
@@ -94,6 +104,9 @@ function whenStarted_failed(error)
   // TODO: show an error message to the user
   console.error(error);
 
+  document.getElementById('model').disabled = false
+  document.getElementById('voice').disabled = false
+
   this.textContent = 'Start';
 }
 
@@ -104,6 +117,9 @@ function whenStopped()
 {
   setAudioStream(null);
   void setNoiseSourceUrl(null);
+
+  document.getElementById('model').disabled = false
+  document.getElementById('voice').disabled = false
 
   this.textContent = 'Start'
 

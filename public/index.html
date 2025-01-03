@@ -12,20 +12,22 @@
   </head>
 
   <body>
-    <label for=autoGainControl>
-      Automatic gain control
-      <input id=autoGainControl type=checkbox checked>
-    </label>
-    <label for=echoCancellation>
-      Echo cancellation
-      <input id=echoCancellation type=checkbox checked>
-    </label>
-    <label for=noiseSuppression>
-      Noise suppression
-      <input id=noiseSuppression type=checkbox checked>
-    </label>
+    <p>
+      <label for=autoGainControl>
+        Automatic gain control
+        <input id=autoGainControl type=checkbox checked>
+      </label>
+      <label for=echoCancellation>
+        Echo cancellation
+        <input id=echoCancellation type=checkbox checked>
+      </label>
+      <label for=noiseSuppression>
+        Noise suppression
+        <input id=noiseSuppression type=checkbox checked>
+      </label>
+    </p>
     <label for="backgroundNoise">
-      backgroundNoise
+      Background noise
       <select id="backgroundNoise">
         <option value="">(None)</option>
         <optgroup label="Call center">
@@ -49,7 +51,50 @@
         </optgroup>
       </select>
     </label>
-    <button id="startStop" disabled>Start</button>
+    <p>
+      <label for="model">
+        IA model
+        <select id=model>
+          <optgroup label="GPT-4o">
+            <option value="gpt-4o-realtime-preview">
+              GPT-4o Realtime Preview
+            </option>
+            <option value="gpt-4o-realtime-preview-2024-10-01">
+              GPT-4o Realtime Preview (2024-10-01)
+            </option>
+            <option value="gpt-4o-realtime-preview-2024-12-17" selected>
+              GPT-4o Realtime Preview (2024-12-17)
+            </option>
+          </optgroup>
+          <optgroup label="GPT-4o mini">
+            <option value="gpt-4o-mini-realtime-preview">
+              GPT-4o mini Realtime Preview
+            </option>
+            <option value="gpt-4o-mini-realtime-preview-2024-12-17">
+              GPT-4o mini Realtime Preview (2024-12-17)
+            </option>
+          </optgroup>
+        </select>
+      </label>
+      <label for="voice">
+        Voice
+        <select id=voice>
+          <optgroup label=female>
+            <option value="alloy">Alloy</option>
+            <option value="coral">Coral</option>
+            <option value="sage">Sage</option>
+            <option value="shimmer">Shimmer</option>
+          </optgroup>
+          <optgroup label=male>
+            <option value="ash">Ash</option>
+            <option value="ballad">Ballad</option>
+            <option value="echo">Echo</option>
+            <option value="verse" selected>Verse</option>
+          </optgroup>
+        </select>
+      </label>
+      <button id="startStop" disabled>Start</button>
+    </p>
   </body>
 
   <script type="module" src="js/index.js"></script>

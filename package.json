@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/piranna/OpenAI-Realtime-test#readme",
   "dependencies": {
+    "@fastify/sensible": "^6.0.2",
     "@fastify/static": "^8.0.3",
     "fastify-cli": "^7.3.0"
   }
