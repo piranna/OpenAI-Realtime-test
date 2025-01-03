@@ -1,6 +1,48 @@
 // Manage the session with OpenAI API
 
 
+function executor_audioStream(resolve, reject)
+{
+  // TODO: handle errors
+
+  peerConnection.addEventListener("track", function({streams: [stream]})
+  {
+    resolve(stream);
+  }, {once: true});
+}
+
+function executor_dataChannel(resolve, reject)
+{
+  dataChannel.addEventListener("open", resolve, {once: true})
+  dataChannel.addEventListener("error", reject, {once: true})
+}
+
+
+
+export function setSpeechSpeed(speed)
+{
+  if (!peerConnection) throw new Error("Session not started");
+
+  const message = {
+    event_id: crypto.randomUUID(),  // TODO: use UUIDv7
+    item: {
+      content: [
+        {
+          text: `Set speech speed to ${speed}`,
+          type: "input_text"
+        }
+      ],
+      role: "system",  // "developer",
+      type: "message"
+    },
+    type: "conversation.item.create"
+  }
+
+  console.debug("Sending message:", message);
+
+  dataChannel.send(JSON.stringify(message));
+}
+
 // Get an ephemeral key from the Fastify server
 async function start({model, voice})
 {
@@ -63,21 +105,15 @@ export async function startSession(promiseMicrophoneStream, options)
   ])
 
   const sdp = await sdpResponse.text()
-  await pc.setRemoteDescription({sdp, type: "answer"});
+
+  await Promise.all([
+    pc.setRemoteDescription({sdp, type: "answer"}),
+    new Promise(executor_dataChannel)
+  ]);
 
   peerConnection = pc;
 
-  if(audioStream) return audioStream;
-
-  return new Promise(function(resolve, reject)
-  {
-    // TODO: handle errors
-
-    pc.addEventListener("track", function({streams: [stream]})
-    {
-      resolve(stream);
-    }, {once: true});
-  })
+  return audioStream || new Promise(executor_audioStream)
 }
 
 // Stop current session, clean up peer connection and data channel

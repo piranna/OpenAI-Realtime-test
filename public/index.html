@@ -51,6 +51,17 @@
         </optgroup>
       </select>
     </label>
+    <label for=speechSpeed>
+      Speech speed
+      <input id=speechSpeed type=range min=0.5 max=2 step=0.1 value=1 list=markers>
+      <datalist id="markers">
+        <option value="0.5"></option>
+        <option value="1"></option>
+        <option value="1.5"></option>
+        <option value="2"></option>
+      </datalist>
+      <span id=speechSpeedValue>1x</span>
+    </label>
     <p>
       <label for="model">
         IA model

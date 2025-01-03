@@ -2,7 +2,7 @@
 
 
 import {mixerStream, setAudioStream, setNoiseSourceUrl} from './mixer.js';
-import {startSession, stopSession} from './openai.js';
+import {setSpeechSpeed, startSession, stopSession} from './openai.js';
 
 
 export function checkbox_onChange({target})
@@ -20,6 +20,15 @@ export function select_onChange({target: {value}})
 
   if(microphoneTrack)
     void setNoiseSourceUrl(noiseSourceUrl).catch(console.error);
+}
+
+export function speechSpeed_onChange({target: {value}})
+{
+  if(document.getElementById('startStop').textContent === 'Stop')
+    setSpeechSpeed(value);
+
+  speechSpeed = value;
+  document.getElementById('speechSpeedValue').textContent = `${value}x`;
 }
 
 export function start_onClick({target})
@@ -81,6 +90,8 @@ function whenMicrophoneStream(stream)
 
 function whenSessionStarted(audioStream)
 {
+  setSpeechSpeed(speechSpeed);
+
   setAudioStream(audioStream);
 
   // BUG: see https://issues.chromium.org/issues/40094084
@@ -152,3 +163,4 @@ const {mediaDevices} = navigator;
 let audio = {}
 let microphoneTrack = null;
 let noiseSourceUrl = null;
+let speechSpeed = 1;

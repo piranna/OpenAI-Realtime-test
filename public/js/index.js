@@ -1,7 +1,9 @@
 // Initiate the event listeners for the UI elements
 
 
-import {checkbox_onChange, select_onChange, start_onClick} from './ui.js';
+import {
+  checkbox_onChange, select_onChange, speechSpeed_onChange, start_onClick
+} from './ui.js';
 
 
 document.addEventListener('DOMContentLoaded', function()
@@ -11,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function()
   const backgroundNoise = document.getElementById('backgroundNoise');
   const echoCancellation = document.getElementById('echoCancellation');
   const noiseSuppression = document.getElementById('noiseSuppression');
+  const speechSpeed = document.getElementById('speechSpeed');
   const startStop = document.getElementById('startStop');
 
   // Add event listeners
@@ -18,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function()
   backgroundNoise.addEventListener('change', select_onChange);
   echoCancellation.addEventListener('change', checkbox_onChange);
   noiseSuppression.addEventListener('change', checkbox_onChange);
+  speechSpeed.addEventListener('change', speechSpeed_onChange);
   startStop.addEventListener('click', start_onClick);
 
   // Initialize the audio constraints from the checkboxes
