@@ -2,7 +2,7 @@
 
 
 import {mixerStream, setAudioStream, setNoiseSourceUrl} from './mixer.js';
-import {setSpeechSpeed, startSession, stopSession} from './openai.js';
+import {greetUser, setSpeechSpeed, startSession, stopSession} from './openai.js';
 
 
 export function checkbox_onChange({target})
@@ -91,6 +91,7 @@ function whenMicrophoneStream(stream)
 function whenSessionStarted(audioStream)
 {
   setSpeechSpeed(speechSpeed);
+  greetUser();
 
   setAudioStream(audioStream);
 

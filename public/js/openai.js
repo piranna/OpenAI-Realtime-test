@@ -19,7 +19,19 @@ function executor_dataChannel(resolve, reject)
 
 
 
+export function greetUser()
+{
+  sendSystemMessage("Greet the user");
+
+  dataChannel.send(JSON.stringify({type: "response.create"}));
+}
+
 export function setSpeechSpeed(speed)
+{
+  sendSystemMessage(`Set speech speed to ${speed}`);
+}
+
+function sendSystemMessage(text)
 {
   if (!peerConnection) throw new Error("Session not started");
 
@@ -28,7 +40,7 @@ export function setSpeechSpeed(speed)
     item: {
       content: [
         {
-          text: `Set speech speed to ${speed}`,
+          text,
           type: "input_text"
         }
       ],
